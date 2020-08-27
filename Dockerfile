@@ -58,10 +58,10 @@ RUN curl -kL http://netix.dl.sourceforge.net/project/bowtie-bio/bowtie2/2.2.9/bo
     unzip /tmp/bowtie2-2.2.9-linux-x86_64.zip -d /tmp && \
     find /tmp/bowtie2-2.2.9/ -maxdepth 1 -type f -executable -exec mv '{}' /usr/local/bin/ ';' && \
     rm -rf /tmp/bowtie2-2.2.9-linux-x86_64.zip /tmp/bowtie2-2.2.9
-RUN curl -kL https://ccb.jhu.edu/software/tophat/downloads/tophat-2.1.1.Linux_x86_64.tar.gz | tar -C /tmp -zxf - && \
+#RUN curl -kL https://ccb.jhu.edu/software/tophat/downloads/tophat-2.1.1.Linux_x86_64.tar.gz | tar -C /tmp -zxf - && \
     find /tmp/tophat-2.1.1.Linux_x86_64/ -maxdepth 1 -executable -type f -exec mv '{}' /usr/local/bin/ ';' && \
     rm -rf /tmp/tophat-2.1.1.Linux_x86_64
-RUN curl -kL http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz | tar -C /tmp -zxf - && \
+#RUN curl -kL http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz | tar -C /tmp -zxf - && \
     find /tmp/cufflinks-2.2.1.Linux_x86_64/ -maxdepth 1 -executable -type f -exec mv '{}' /usr/local/bin/ ';' && \
     rm -rf /tmp/cufflinks-2.2.1.Linux_x86_64    
 
