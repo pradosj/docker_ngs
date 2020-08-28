@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:16.04
 
 
 #
@@ -10,10 +10,13 @@ RUN apt-get update && apt-get install -y \
     make \
     curl \
     bzip2 \
-    g++ \
+    libbz2-dev \
     libz-dev \
+    liblzma-dev \
+    g++ \
     wget \
     libncurses-dev \
+    libcurl4-openssl-dev \
     unzip \
     ftp \
     vim
@@ -23,15 +26,15 @@ RUN apt-get update && apt-get install -y \
 #-#-#-#-#-#-#-#-#-#-#-#-#
 # BAM processing tools
 #-#-#-#-#-#-#-#-#-#-#-#-#
-RUN curl -kL https://github.com/samtools/htslib/releases/download/1.3.2/htslib-1.3.2.tar.bz2 | tar -C /tmp -jxf - && \
-    cd /tmp/htslib-1.3.2 && make && make install && \
-    rm -rf /tmp/htslib-1.3.2
-RUN curl -kL https://github.com/samtools/samtools/releases/download/1.3.1/samtools-1.3.1.tar.bz2 | tar -C /tmp -jxf - && \
-    cd /tmp/samtools-1.3.1 && make && make install && \
-    rm -rf /tmp/samtools-1.3.1
-RUN curl -kL https://github.com/samtools/bcftools/releases/download/1.3.1/bcftools-1.3.1.tar.bz2 | tar -C /tmp -jxf - && \
-    cd /tmp/bcftools-1.3.1 && make && make install && \
-    rm -rf /tmp/bcftools-1.3.1
+RUN curl -kL https://github.com/samtools/htslib/releases/download/1.10.2/htslib-1.10.2.tar.bz2 | tar -C /tmp -jxf - && \
+    cd /tmp/htslib-1.10.2 && make && make install && \
+    rm -rf /tmp/htslib-1.10.2
+RUN curl -kL https://github.com/samtools/samtools/releases/download/1.10/samtools-1.10.tar.bz2 | tar -C /tmp -jxf - && \
+    cd /tmp/samtools-1.10 && make && make install && \
+    rm -rf /tmp/samtools-1.10
+RUN curl -kL https://github.com/samtools/bcftools/releases/download/1.10.2/bcftools-1.10.2.tar.bz2 | tar -C /tmp -jxf - && \
+    cd /tmp/bcftools-1.10.2 && make && make install && \
+    rm -rf /tmp/bcftools-1.10.2
 
 
 
@@ -39,9 +42,14 @@ RUN curl -kL https://github.com/samtools/bcftools/releases/download/1.3.1/bcftoo
 # DNA analysis tools
 #-#-#-#-#-#-#-#-#-#-#-#-#
 #bwa
-RUN curl -kL http://netix.dl.sourceforge.net/project/bio-bwa/bwa-0.7.15.tar.bz2 | tar -C /tmp -jxf - && \
-    cd /tmp/bwa-0.7.15 && make && find /tmp/bwa-0.7.15/ -type f -executable -exec mv '{}' /usr/local/bin/ ';' && \
-    rm -rf /tmp/bwa-0.7.15/
+RUN curl -kL https://github.com/lh3/bwa/releases/download/v0.7.17/bwa-0.7.17.tar.bz2 | tar -C /tmp -jxf - && \
+    cd /tmp/bwa-0.7.17 && make && find /tmp/bwa-0.7.17/ -type f -executable -exec mv '{}' /usr/local/bin/ ';' && \
+    rm -rf /tmp/bwa-0.7.17/
+#minimap2
+RUN cd /tmp && git clone https://github.com/lh3/minimap2 && \
+    cd /tmp/minimap2 && make && \
+    find /tmp/minimap2/ -type f -executable -exec mv '{}' /usr/local/bin/ ';'
+
 
 
 
@@ -49,15 +57,15 @@ RUN curl -kL http://netix.dl.sourceforge.net/project/bio-bwa/bwa-0.7.15.tar.bz2 
 # RNA analysis tools 
 #-#-#-#-#-#-#-#-#-#-#-#-#
 #STAR
-RUN curl -kL https://github.com/alexdobin/STAR/archive/2.5.2b.tar.gz | tar -C /tmp -zxf - && \ 
-    mv /tmp/STAR-2.5.2b/bin/Linux_x86_64_static/* /usr/local/bin/ && \
-    rm -rf /tmp/STAR-2.5.2b/
+RUN curl -kL https://github.com/alexdobin/STAR/archive/2.7.5c.tar.gz | tar -C /tmp -zxf - && \ 
+    mv /tmp/STAR-2.7.5c/bin/Linux_x86_64_static/* /usr/local/bin/ && \
+    rm -rf /tmp/STAR-2.7.5c/
 
 #bowtie2 + tophat + cufflinks
-RUN curl -kL http://netix.dl.sourceforge.net/project/bowtie-bio/bowtie2/2.2.9/bowtie2-2.2.9-linux-x86_64.zip -o /tmp/bowtie2-2.2.9-linux-x86_64.zip && \
-    unzip /tmp/bowtie2-2.2.9-linux-x86_64.zip -d /tmp && \
-    find /tmp/bowtie2-2.2.9/ -maxdepth 1 -type f -executable -exec mv '{}' /usr/local/bin/ ';' && \
-    rm -rf /tmp/bowtie2-2.2.9-linux-x86_64.zip /tmp/bowtie2-2.2.9
+#RUN curl -kL http://netix.dl.sourceforge.net/project/bowtie-bio/bowtie2/2.2.9/bowtie2-2.2.9-linux-x86_64.zip -o /tmp/bowtie2-2.2.9-linux-x86_64.zip && \
+#    unzip /tmp/bowtie2-2.2.9-linux-x86_64.zip -d /tmp && \
+#    find /tmp/bowtie2-2.2.9/ -maxdepth 1 -type f -executable -exec mv '{}' /usr/local/bin/ ';' && \
+#    rm -rf /tmp/bowtie2-2.2.9-linux-x86_64.zip /tmp/bowtie2-2.2.9
 #RUN curl -kL https://ccb.jhu.edu/software/tophat/downloads/tophat-2.1.1.Linux_x86_64.tar.gz | tar -C /tmp -zxf - && \
 #    find /tmp/tophat-2.1.1.Linux_x86_64/ -maxdepth 1 -executable -type f -exec mv '{}' /usr/local/bin/ ';' && \
 #    rm -rf /tmp/tophat-2.1.1.Linux_x86_64
@@ -90,7 +98,6 @@ RUN apt-get update && apt-get install -y picard-tools
 
 
 
-
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 # Other tools to install
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
@@ -98,22 +105,6 @@ RUN apt-get update && apt-get install -y picard-tools
 # SRA toolkit
 RUN curl -kL http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.7.0/sratoolkit.2.7.0-ubuntu64.tar.gz | tar -C /tmp -zxf - 
 
-
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-# Install HTSeq-count, MACS2, HTSeq, umi_tools
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    python2.7-dev \
-    python-numpy \
-    python-matplotlib \
-    python-pip \
-    libbz2-dev \
-    liblzma-dev
-
-RUN pip install --upgrade pip && easy_install -U setuptools
-RUN pip install pysam MACS2 HTSeq
-RUN pip install cython pandas future umi_tools
 
 
 
@@ -136,7 +127,7 @@ RUN ./configure && make
 # Install my script to perform basic SNP calling
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 COPY mplp2vcf.cpp /tmp/
-RUN cd /tmp;g++ -O3 -Wall -std=c++0x -o /usr/local/bin/mplp2vcf -I/usr/local/include/htslib mplp2vcf.cpp -Lsrc/usr/htslib -Wl,-Bstatic -lhts -Wl,-Bdynamic -lz -lpthread
+RUN cd /tmp;g++ -O3 -Wall -std=c++0x -o /usr/local/bin/mplp2vcf -I/usr/local/include/htslib mplp2vcf.cpp -Lsrc/usr/htslib -Wl,-Bstatic -lhts -Wl,-Bdynamic -lz -llzma -lbz2 -lcurl -lpthread
 
 
 
@@ -151,13 +142,6 @@ RUN curl -kL https://freefr.dl.sourceforge.net/project/bowtie-bio/bowtie/1.2.0/b
 
 
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-# Cutadapt & Fastx toolkit
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-RUN pip install --upgrade cutadapt
-RUN apt-get update && apt-get install -y fastx-toolkit
-
-
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 # Jellyfish
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 RUN curl -kL https://github.com/gmarcais/Jellyfish/releases/download/v2.3.0/jellyfish-2.3.0.tar.gz | tar -C /tmp -zxf - && \
@@ -165,6 +149,30 @@ RUN curl -kL https://github.com/gmarcais/Jellyfish/releases/download/v2.3.0/jell
     rm -rf /tmp/jellyfish-2.3.0
 
 
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# Fastx toolkit
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+RUN apt-get update && apt-get install -y fastx-toolkit
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# Install Python
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python2.7-dev \
+    python-numpy \
+    python-matplotlib \
+    python-pip \
+    libbz2-dev \
+    liblzma-dev
+
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# Cutadapt HTSeq-count, MACS2, HTSeq, umi_tools
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+RUN pip install --upgrade cutadapt==1.9
+RUN pip install --upgrade pip && easy_install -U setuptools
+#RUN pip install pysam HTSeq MACS2==2.1.3
+#RUN pip install cython pandas future umi_tools
 
 
 
@@ -175,6 +183,7 @@ RUN curl -kL https://github.com/gmarcais/Jellyfish/releases/download/v2.3.0/jell
 # Mfold/UNAfold
 # http://data.broadinstitute.org/igv/projects/downloads/igvtools_2.3.79.zip
 # my Makefiles with NGS rules
+#  minimap
 
 
 # TOOLS WITH GUI
