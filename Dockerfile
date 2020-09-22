@@ -175,7 +175,7 @@ RUN pip install --upgrade pip && easy_install -U setuptools
 #RUN pip install pysam HTSeq MACS2==2.1.3
 #RUN pip install cython pandas future umi_tools
 
-RUN curl -kL http://cab.spbu.ru/files/release3.14.1/SPAdes-3.14.1-Linux.tar.gz | tar -C /tmp -xzf - && find /tmp/SPAdes-3.14.1-Linux/ -type f -executable -exec mv '{}' /usr/local/bin/ ';'
+RUN curl -kL http://cab.spbu.ru/files/release3.14.1/SPAdes-3.14.1-Linux.tar.gz | tar -C /tmp -xzf - && mv /tmp/SPAdes-3.14.1-Linux/bin/* /usr/local/bin/ && mv /tmp/SPAdes-3.14.1-Linux/share/* /usr/local/share/
 
 
 # GATK
